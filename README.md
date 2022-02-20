@@ -6,7 +6,7 @@
 [1]: https://github.com/nlohmann/json
 [2]: https://www.openssl.org
 
-# Run and tested platforms
+# Tested platforms
 * mac
 
 # how to run server
