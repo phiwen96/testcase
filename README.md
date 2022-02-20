@@ -23,12 +23,13 @@ foo@bar:~$ make && build/apps/client <remoteIP> <remotePort>
 # API Status Codes
 
 Example of a response with status code and etc in JSON format.
-
+```json
 {
   "success": false,
   "status_code": 5,
   "status_message": "Login fail, wrong password"
 }
+```
 
 |    Code    | HTTP Status |   Message  															    |
 | ---------- | ----------- | -------------------------------------------------------------------------- |
