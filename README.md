@@ -6,8 +6,8 @@
 [1]: https://github.com/nlohmann/json
 [2]: https://www.openssl.org
 
-# Run and tested platforms¯ 
-	- mac
+# Run and tested platforms
+* mac
 
 # how to run server
 ```console
