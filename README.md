@@ -1,3 +1,14 @@
+# External libraries
+
+- [nlohmann json][1]
+- [openssl][2]
+
+[1]: https://github.com/nlohmann/json
+[2]: https://www.openssl.org
+
+# Run and tested platforms¯ 
+	- mac
+
 # how to run server
 ```console
 foo@bar:~$ make && build/apps/server <PORT>
