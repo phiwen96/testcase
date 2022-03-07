@@ -1,7 +1,17 @@
 export module Common;
-
-import std;
-import Darwin;
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <errno.h>
+#include <string.h>
+#include <netdb.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <fcntl.h>
+// import std;
+// import Darwin;
 
 // using namespace std;
 // using namespace nlohmann;
@@ -10,10 +20,11 @@ export{
 	// helper function to generate an access token
 	inline auto random_int (auto min, auto max) noexcept
 	{
+		return rand() % (max + 1 - min) + min;
 		// One engine instance per thread
-		static thread_local auto engine = std::default_random_engine{std::random_device{}()};
-		auto dist = std::uniform_int_distribution<>{min, max};
-		return dist(engine);
+		// static thread_local auto engine = std::default_random_engine{std::random_device{}()};
+		// auto dist = std::uniform_int_distribution<>{min, max};
+		// return dist(engine);
 	}
 
 
@@ -81,15 +92,15 @@ export{
 		return sockfd;
 	}
 
-	template <typename T, typename U>
-	concept Same_as = std::is_same_v<T, U>;
+	// template <typename T, typename U>
+	// concept Same_as = std::is_same_v<T, U>;
 
-	template <typename T>
-	concept String = requires(T a, T && b)
-	{
-		std::string{a};
-		std::string{std::forward<T &&>(b)};
-	};
+	// template <typename T>
+	// concept String = requires(T a, T && b)
+	// {
+	// 	std::string{a};
+	// 	std::string{std::forward<T &&>(b)};
+	// };
 
 #define fwd(x) std::forward<x>(x)
 
@@ -116,8 +127,8 @@ export{
 		return n == -1 ? -1 : 0; // return -1 on failure, 0 on success
 	}
 
-	inline auto nr_of_threads() noexcept->auto
-	{
-		return std::thread::hardware_concurrency();
-	}
+	// inline auto nr_of_threads() noexcept->auto
+	// {
+	// 	return std::thread::hardware_concurrency();
+	// }
 }

@@ -1,8 +1,22 @@
 export module RemoteClient;
-import std;
-export import Darwin;
+// import std;
+// export import Darwin;
 
 // will ensure everything is sent to host
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <errno.h>
+#include <string.h>
+#include <netdb.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <fcntl.h>
+// #include <string>
+// #include <chrono>
+// #include <utility>
 inline auto sendall(int sock, char const *buf)->int
 	{
 		int total = 0;
@@ -32,7 +46,7 @@ export
 	// this will enable communication to a host
 	struct remote_client_t
 	{
-		remote_client_t(int remote_sockid) noexcept : _alive {std::chrono::system_clock::now()}, _remote_sockid {remote_sockid}
+		remote_client_t(int remote_sockid) noexcept : _remote_sockid {remote_sockid}
 		{
 			auto remote_addr = sockaddr_storage {};
 			
@@ -56,16 +70,22 @@ export
 
 			fcntl(_remote_sockid, F_SETFL, O_NONBLOCK | FASYNC);
 		}
-		remote_client_t(remote_client_t && o) noexcept : _alive {o._alive}, _remote_port {o._remote_port}, _remote_sockid {o._remote_sockid}
+		remote_client_t(remote_client_t && o) noexcept : _remote_port {o._remote_port}, _remote_sockid {o._remote_sockid}
 		{
-			std::copy (o._remote_ip_address, o._remote_ip_address + INET6_ADDRSTRLEN, _remote_ip_address);
+			for (auto i = 0; i < INET6_ADDRSTRLEN; ++i)
+			{
+				_remote_ip_address [i] = o._remote_ip_address [i];
+			}
 
 		}
-		remote_client_t(remote_client_t const & o) noexcept : _alive {o._alive}, _remote_port {o._remote_port}, _remote_sockid {o._remote_sockid}
+		remote_client_t(remote_client_t const & o) noexcept : _remote_port {o._remote_port}, _remote_sockid {o._remote_sockid}
 		{
-			std::copy (o._remote_ip_address, o._remote_ip_address + INET6_ADDRSTRLEN, _remote_ip_address);
+			for (auto i = 0; i < INET6_ADDRSTRLEN; ++i)
+			{
+				_remote_ip_address [i] = o._remote_ip_address [i];
+			}
 		}
-		friend auto remoteIP(remote_client_t const& me) -> std::string
+		friend auto remoteIP(remote_client_t const& me) -> auto
 		{
 			return me._remote_ip_address;
 		}
@@ -78,21 +98,28 @@ export
 			return me._remote_sockid;
 		}
 
-		friend auto operator<<(remote_client_t& me, std::string const& s) -> remote_client_t&
+
+
+		// friend auto operator<<(remote_client_t& me, std::string const& s) -> remote_client_t&
+		// {
+		// 	sendall (me._remote_sockid, s.c_str());
+		// 	return me;
+		// }
+
+		auto write (char const* msg) -> void
 		{
-			sendall (me._remote_sockid, s.c_str());
-			return me;
+			sendall (_remote_sockid, msg);
 		}
 
-		friend auto operator<<(std::ostream &os, remote_client_t const &me) -> std::ostream &
-		{
-			os << me._remote_ip_address << ":" << me._remote_port;
-			return os;
-		}
+		// friend auto operator<<(std::ostream &os, remote_client_t const &me) -> std::ostream &
+		// {
+		// 	os << me._remote_ip_address << ":" << me._remote_port;
+		// 	return os;
+		// }
 
 		friend auto operator== (remote_client_t const& lhs, remote_client_t const& rhs) noexcept 
 		{
-			return strcmp (lhs._remote_ip_address, rhs._remote_ip_address) != 0 and lhs._alive == rhs._alive and lhs._remote_port == rhs._remote_port and lhs._remote_sockid == rhs._remote_sockid;
+			return strcmp (lhs._remote_ip_address, rhs._remote_ip_address) != 0 and lhs._remote_port == rhs._remote_port and lhs._remote_sockid == rhs._remote_sockid;
 		}
 		friend auto operator!= (remote_client_t const& lhs, remote_client_t const& rhs) noexcept 
 		{
@@ -101,7 +128,7 @@ export
 
 	private:
 		char _remote_ip_address[INET6_ADDRSTRLEN];
-		std::chrono::time_point <std::chrono::system_clock> _alive;
+		// std::chrono::time_point <std::chrono::system_clock> _alive;
 		int _remote_port;
 		int _remote_sockid;
 	};

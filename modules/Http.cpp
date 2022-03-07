@@ -1,7 +1,11 @@
 export module Http;
 
-import std;
-using std::cout, std::endl;
+import AIO;
+
+
+
+// import std;
+// using std::cout, std::endl;
 
 export namespace http {
 	// using std::cout, std::endl;
@@ -54,11 +58,13 @@ export namespace http {
 
 					line_out.version = std::stof (version);
 				} else {
-					std::cout << "Failed to parse url" << std::endl;
+					// std::cout << "Failed to parse url" << std::endl;
+					aio::write ()
 					return std::nullopt;
 				}
 			} else {
-				std::cout << "Failed to parse request type" << std::endl;
+
+				// std::cout << "Failed to parse request type" << std::endl;
 				return std::nullopt;
 			}
 			return line_out;

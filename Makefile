@@ -1,5 +1,5 @@
 ############### C++ compiler flags ###################
-CXX := clang++
+CXX := /usr/bin/clang++-12
 CXX_FLAGS = -std=c++2a -stdlib=libc++ -fmodules-ts -fmodules -fbuiltin-module-map -fimplicit-modules -fimplicit-module-maps -fprebuilt-module-path=.
 
 ############### External C++ libraries  ###################
